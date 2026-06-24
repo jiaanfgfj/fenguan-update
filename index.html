@@ -3,28 +3,352 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>佳安风管分节软件 - 更新</title>
+  <title>佳安风管分节软件 - AutoCAD风管分节插件</title>
   <style>
-    body { font-family: "Microsoft YaHei", sans-serif; max-width: 800px; margin: 50px auto; padding: 0 20px; line-height: 1.8; }
-    h1 { color: #333; border-bottom: 2px solid #1890ff; padding-bottom: 10px; }
-    .version { color: #1890ff; font-size: 1.2em; margin: 20px 0; }
-    .note { background: #f5f5f5; padding: 15px; border-radius: 5px; white-space: pre-line; }
-    .btn { display: inline-block; padding: 12px 30px; background: #1890ff; color: #fff; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 20px 0; }
-    .btn:hover { background: #096dd9; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      line-height: 1.8;
+    }
+
+    /* 顶部横幅 */
+    .header {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: #fff;
+      padding: 60px 20px 50px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 2.4em;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    .header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .header .version-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      margin-top: 15px;
+    }
+
+    /* 主体 */
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+    /* 功能特性 */
+    .section { padding: 50px 0; }
+    .section-title {
+      text-align: center;
+      font-size: 1.6em;
+      margin-bottom: 35px;
+      color: #1a73e8;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .feature-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px 25px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-4px); }
+    .feature-card .icon {
+      font-size: 2.5em;
+      margin-bottom: 12px;
+    }
+    .feature-card h3 { font-size: 1.15em; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.9em; color: #666; }
+
+    /* 截图区域 */
+    .screenshots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .screenshot-placeholder {
+      background: #e8edf3;
+      border: 2px dashed #ccc;
+      border-radius: 12px;
+      padding: 60px 20px;
+      text-align: center;
+      color: #999;
+      font-size: 0.95em;
+    }
+    .screenshot-placeholder .icon { font-size: 2.5em; margin-bottom: 8px; }
+
+    /* 下载区域 */
+    .download-section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .download-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 25px 0;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 36px;
+      border-radius: 8px;
+      font-size: 1.05em;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #1a73e8;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #1557b0; }
+    .btn-secondary {
+      background: #34a853;
+      color: #fff;
+    }
+    .btn-secondary:hover { background: #2d8f47; }
+    .btn-outline {
+      background: #fff;
+      color: #1a73e8;
+      border: 2px solid #1a73e8;
+    }
+    .btn-outline:hover { background: #f0f5ff; }
+    .btn-small {
+      padding: 8px 20px;
+      font-size: 0.9em;
+    }
+    .download-info {
+      font-size: 0.85em;
+      color: #888;
+      margin-top: 10px;
+    }
+    .download-info a { color: #1a73e8; text-decoration: none; }
+
+    /* 更新日志 */
+    .changelog {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .changelog .version-tag {
+      display: inline-block;
+      background: #1a73e8;
+      color: #fff;
+      padding: 2px 12px;
+      border-radius: 12px;
+      font-size: 0.8em;
+      margin-bottom: 10px;
+    }
+    .changelog .note { white-space: pre-line; color: #555; }
+
+    /* 使用说明 */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      counter-reset: step;
+    }
+    .step-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      counter-increment: step;
+    }
+    .step-card .step-num {
+      display: inline-block;
+      width: 30px; height: 30px;
+      line-height: 30px;
+      text-align: center;
+      background: #1a73e8;
+      color: #fff;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 0.85em;
+      margin-bottom: 8px;
+    }
+    .step-card h4 { margin-bottom: 5px; }
+    .step-card p { font-size: 0.88em; color: #666; }
+
+    /* 页脚 */
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+      font-size: 0.85em;
+    }
+
+    /* 分隔线 */
+    .divider { height: 1px; background: #e0e0e0; margin: 10px 0; }
+
+    @media (max-width: 600px) {
+      .header { padding: 40px 15px 35px; }
+      .header h1 { font-size: 1.6em; }
+      .download-buttons { flex-direction: column; align-items: center; }
+      .btn { width: 100%; justify-content: center; }
+    }
   </style>
 </head>
 <body>
-  <h1>佳安风管分节软件</h1>
-  <p>AutoCAD 风管分节插件 - 自动更新服务</p>
-  <div class="version" id="version">正在获取最新版本...</div>
-  <div class="note" id="note"></div>
-  <a class="btn" href="dist/风管分节软件.VLX" download>下载最新版本</a>
-  <p style="color:#999;font-size:14px;margin-top:40px;">提示：在 AutoCAD 中运行命令 <b>jcgx1</b> 可自动检查更新。</p>
-  <script>
-    fetch('version.json').then(r=>r.json()).then(d=>{
-      document.getElementById('version').textContent = '最新版本: ' + d.version;
-      document.getElementById('note').textContent = '更新内容:\n' + (d.note || '');
-    });
-  </script>
+
+<!-- 顶部横幅 -->
+<div class="header">
+  <h1>🔧 佳安风管分节软件</h1>
+  <p>AutoCAD 风管 / 风阀分节插件 — 快速标注、自动分节、一键出图</p>
+  <div class="version-badge" id="header-version">正在获取版本...</div>
+</div>
+
+<!-- 功能特性 -->
+<div class="container">
+  <div class="section">
+    <h2 class="section-title">✨ 主要功能</h2>
+    <div class="features">
+      <div class="feature-card">
+        <div class="icon">📐</div>
+        <h3>风管自动分节</h3>
+        <p>输入风管尺寸，自动计算分节长度、法兰间距，生成完整的标注图纸</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📏</div>
+        <h3>多种标注方式</h3>
+        <p>支持直管、弯头、变径、立管、变径等多种风管构件的智能分节</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📊</div>
+        <h3>Excel 导出</h3>
+        <p>自动生成风管明细表，导出到 Excel / WPS，方便统计和采购</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🔄</div>
+        <h3>自动更新</h3>
+        <p>内置自动更新功能（命令: jcgx1），一键获取最新版本</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🎯</div>
+        <h3>自定义配置</h3>
+        <p>法兰类型、系统类型、标准长度等参数自由配置，适配不同项目需求</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">⚡</div>
+        <h3>高效出图</h3>
+        <p>批量处理多条风管，大幅提升 CAD 风管分节出图效率</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 截图展示 -->
+  <div class="section">
+    <h2 class="section-title">📷 界面预览</h2>
+    <div class="screenshots">
+      <div class="screenshot-placeholder">
+        <div class="icon">🖼️</div>
+        <p>主界面截图<br><small>（请替换为实际截图）</small></p>
+      </div>
+      <div class="screenshot-placeholder">
+        <div class="icon">🖼️</div>
+        <p>分节效果截图<br><small>（请替换为实际截图）</small></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 下载 -->
+  <div class="section">
+    <h2 class="section-title">📥 下载</h2>
+    <div class="download-section">
+      <p style="font-size:1.1em;color:#555;">选择适合你的方式下载</p>
+      <div class="download-buttons">
+        <a class="btn btn-primary" href="dist/风管分节软件.VLX" download>
+          ⬇ 下载 VLX 组件
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/jiaanfgfj/fenguan-update/releases" target="_blank">
+          ⬇ 下载安装程序
+        </a>
+      </div>
+      <div class="download-info">
+        <strong>VLX 组件</strong>（225 KB）：适用于已有 AutoCAD 环境的用户，直接加载使用<br>
+        <strong>安装程序</strong>（37 MB）：适用于首次安装，包含完整组件和菜单配置
+        <br><br>
+        也可通过 <a href="https://github.com/jiaanfgfj/fenguan-update" target="_blank">GitHub 仓库</a> 获取源码
+      </div>
+    </div>
+  </div>
+
+  <!-- 使用说明 -->
+  <div class="section">
+    <h2 class="section-title">📖 使用说明</h2>
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h4>安装 / 加载</h4>
+        <p>运行安装程序，或在 AutoCAD 中输入 <b>AP</b> 命令加载 VLX 文件</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h4>注册激活</h4>
+        <p>输入 <b>jhm</b> 命令，联系作者获取注册码完成激活</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h4>开始使用</h4>
+        <p>输入 <b>fala</b> 配置参数 → 输入 <b>zz</b>（直管）或 <b>dd</b>（弯头）开始分节</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h4>检查更新</h4>
+        <p>输入 <b>jcgx1</b> 自动检测并下载最新版本</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 更新日志 -->
+  <div class="section">
+    <h2 class="section-title">📋 更新日志</h2>
+    <div class="changelog" id="changelog">
+      <div class="version-tag" id="log-version">获取中...</div>
+      <div class="note" id="log-note"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 页脚 -->
+<div class="footer">
+  <p>佳安风管分节软件 © 2026 | 由 GitHub Pages 提供自动更新服务</p>
+  <p style="margin-top:5px;">在 AutoCAD 中输入 <b>jcgx1</b> 检查更新</p>
+</div>
+
+<script>
+  fetch('version.json').then(r=>r.json()).then(d=>{
+    document.getElementById('header-version').textContent = '最新版本: v' + d.version;
+    document.getElementById('log-version').textContent = 'v' + d.version;
+    document.getElementById('log-note').textContent = d.note || '暂无更新说明';
+  }).catch(()=>{
+    document.getElementById('header-version').textContent = '无法获取版本信息';
+  });
+
+  // 检查 URL 参数，显示更新成功提示
+  if (window.location.search.includes('updated=1')) {
+    setTimeout(() => alert('更新已成功应用！请重启 AutoCAD。'), 500);
+  }
+</script>
+
 </body>
 </html>
